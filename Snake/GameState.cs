@@ -27,16 +27,57 @@ namespace Snake
             Dir = Direction.Right;
 
             AddSnake();
+            AddFood();
         }
 
         private void AddSnake()
         {
             int r = Rows / 2;
-            
-            for (int c = 0; c < 3; c++) {
+
+            for (int c = 0; c < 3; c++)
+            {
                 Grid[r, c] = GridValue.Snake;
                 snakePosition.AddFirst(new Position(r, c));
             }
+        }
+
+        private IEnumerable<Position> EmptyPositions()
+        {
+            for (int r = 0; r < Rows; r++)
+            {
+                for (int c = 0; c < Cols; c++)
+                {
+                    if (Grid[r, c] == GridValue.Empty) yield return new Position(r, c);
+                }
+            }
+        }
+
+        private void AddFood()
+        {
+            List<Position> empty = new List<Position>(EmptyPositions());
+
+            if (empty.Count == 0)
+            {
+                return;
+            }
+
+            Position pos = empty[random.Next(empty.Count)];
+            Grid[pos.Row, pos.Col] = GridValue.Food;
+        }
+
+        public Position HeadPosition()
+        {
+            return snakePosition.First.Value;
+        }
+
+        public Position TailPosition()
+        {
+            return snakePosition.Last.Value;
+        }
+
+        public IEnumerable<Position> SnakePositions()
+        {
+            return snakePosition;
         }
     }
 }
